@@ -18,7 +18,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-module "terra-test_vpc" {
+module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "dev"
@@ -33,25 +33,25 @@ module "terra-test_vpc" {
   }
 }
 
-resource "aws_instance" "terra-test" {
+resource "aws_instance" "blog" {
   ami                    = data.aws_ami.app_ami.id
   instance_type          = var.instance_type
-  vpc_security_group_ids = [module.terra-test_sg.security_group_id]
+  vpc_security_group_ids = [module.blog_sg.security_group_id]
 
-  subnet_id = module.terra-test_vpc.public_subnets[0]
+  subnet_id = module.blog_vpc.public_subnets[0]
 
   tags = {
     Name = "Learning Terraform_Test"
   }
 }
 
-module "terra-test_alb" {
+module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name    = "terra-test-alb"
-  vpc_id  = module.terra-test_vpc.vpc_id
-  subnets = module.terra-test_vpc.public_subnets
-  security_groups = [module.terra-test_sg.security_group_id]
+  name    = "blog-alb"
+  vpc_id  = module.blog_vpc.vpc_id
+  subnets = module.blog_vpc.public_subnets
+  security_groups = [module.blog_sg.security_group_id]
 
   listeners = {
     ex-http-https-redirect = {
@@ -76,11 +76,11 @@ module "terra-test_alb" {
 
   target_groups = {
     ex-instance = {
-      name_prefix      = "terra-test"
+      name_prefix      = "blog"
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = "aws_instance.terra-test.id"
+      target_id        = "aws_instance.blog.id"
     }
   }
 
@@ -89,12 +89,12 @@ module "terra-test_alb" {
     Project     = "Example"
   }
 }
-module "terra-test_sg" {
+module "blog_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.3.1"
-  name = "terra-test"
+  name = "blog"
 
-  vpc_id = module.terra-test_vpc.vpc_id
+  vpc_id = module.blog_vpc.vpc_id
   
   ingress_rules     = ["http-80-tcp", "https-443-tcp"]
   ingress_cidr_blocks = ["0.0.0.0/0"]
