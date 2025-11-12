@@ -78,8 +78,6 @@ module "blog_alb" {
       target_group_index = 0
     }
 
-  }
-
   tags = {
     Environment = "Dev"
     Project     = "Example"
