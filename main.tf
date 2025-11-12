@@ -48,10 +48,10 @@ resource "aws_instance" "web_test" {
 module "web_test_alb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name    = "my-alb"
-  vpc_id  = "module.web_test_vpc.vpc_id"
-  subnets = [module.web_test_vpc.public_subnets"]
-  security_groups = module.web_test_sg.security_group_id
+  name    = "web_test_alb-alb"
+  vpc_id  = module.web_test_vpc.vpc_id
+  subnets = module.web_test_vpc.public_subnets
+  security_groups = [module.web_test_sg.security_group_id]
 
   listeners = {
     ex-http-https-redirect = {
