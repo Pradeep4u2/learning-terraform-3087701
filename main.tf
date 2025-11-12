@@ -70,7 +70,6 @@ module "blog-alb" {
       protocol = "HTTP"
       }
     }
-  }
 
   target_groups = {
     {
