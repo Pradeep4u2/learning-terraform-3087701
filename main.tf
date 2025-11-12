@@ -56,7 +56,7 @@ module "autoscaling" {
   # insert the 1 required variable here
 }
 
-module "blog-alb" {
+module "alb" {
   source = "terraform-aws-modules/alb/aws"
 
   name    = "blog-alb"
