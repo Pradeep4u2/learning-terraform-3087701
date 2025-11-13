@@ -42,7 +42,7 @@ module "autoscaling" {
   max_size = 2
 
   vpc_zone_identifier = module.blog_vpc.public_subnets
-  target_groups_arms = module.blog-alb.target_groups_arms
+  target_groups_arms = module.blog_alb.target_groups_arms
   security_groups = [module.blog_sg.security_group_id]
 
   image_id = data.aws_ami.app_ami.id
@@ -52,7 +52,7 @@ module "autoscaling" {
   # insert the 1 required variable here
 }
 
-module "alb" {
+module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
   
   name    = "blog-alb"
@@ -87,7 +87,6 @@ listeners = {
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = aws_instance.blog.id
     }
   }
 
