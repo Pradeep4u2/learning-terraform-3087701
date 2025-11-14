@@ -71,7 +71,7 @@ module "blog_alb" {
     ex-https = {
       port            = 443
       protocol        = "HTTPS"
-      certificate_arn = aws_acm_certificate.blog_cert.arn
+      certificate_arn = arn:aws:iam::123456789012:server-certificate/test_cert-123456789012
       action_type     = "forward"
       target_group_index = 0
     }
