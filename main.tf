@@ -40,13 +40,13 @@ module "blog_autoscaling" {
   min_size            = 1
   max_size            = 2
   vpc_zone_identifier = module.blog_vpc.public_subnets
-  #target_group_arns   = module.blog_alb_test.target_group_arns
+  #target_group_arns   = module.blog_alb.target_group_arns
   security_groups     = [module.blog_sg.security_group_id]
   instance_type       = var.instance_type
   image_id            = data.aws_ami.app_ami.id
 }
 
-module "blog_alb_test" {
+module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
 
@@ -60,7 +60,7 @@ module "blog_alb_test" {
 
   target_groups = [
     {
-      name_prefix      = "blog_tg"
+      name_prefix      = "blog"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
