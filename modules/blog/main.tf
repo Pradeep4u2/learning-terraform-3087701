@@ -57,30 +57,30 @@ module "blog_alb" {
   subnets            = module.blog_vpc.public_subnets
   security_groups    = [module.blog_sg.security_group_id]
 
-  target_groups = [
-    {
-      name_prefix  = "blog"
-      port         = 80
-      protocol     = "HTTP"
-      target_type  = "instance"
-    }
-  ]
+target_groups = {
+  blog_tg = {
+    name_prefix = "blog"
+    port        = 80
+    protocol    = "HTTP"
+    target_type = "instance"
+  }
+}
 
-  listeners = [
-    {
-      port     = 80
-      protocol = "HTTP"
-      default_action = [{
-        type             = "forward"
-        target_group_key = 0
-      }]
+  listeners = {
+  http = {
+    port = 80
+    protocol = "HTTP"
+    default_action = {
+      type             = "forward"
+      target_group_key = "blog_tg"  # reference the TG by its map key
     }
-  ]
+  }
+}
 }
 
 resource "aws_autoscaling_attachment" "asg_attachment" {
   autoscaling_group_name = module.blog_autoscaling.autoscaling_group_name
-  lb_target_group_arn    = module.blog_alb.target_group_arns[0]
+  lb_target_group_arn    = module.blog_alb.target_group_arns["blog_tg"]
 }
 
 module "blog_sg" {
