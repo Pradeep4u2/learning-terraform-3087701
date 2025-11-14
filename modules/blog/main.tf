@@ -47,6 +47,21 @@ module "blog_autoscaling" {
 
 }
 
+module "blog_ec2" {
+  source = "./modules/blog_ec2"
+
+  count = var.instance_count
+  ami           = var.ami
+  instance_type = var.instance_type
+  subnet_id     = element(module.blog_vpc.public_subnets, count.index)
+  security_groups = [module.blog_sg.security_group_id]
+}
+
+output "instance_ids" {
+  value = aws_instance.blog[*].id
+}
+
+
 module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "10.2.0" # upgrade from 8.4.0
@@ -83,6 +98,15 @@ target_groups = {
 resource "aws_autoscaling_attachment" "asg_attachment" {
   autoscaling_group_name = module.blog_autoscaling.autoscaling_group_name
   lb_target_group_arn    = module.blog_alb.target_groups["blog_tg"].arn
+}
+
+# ALB Outputs
+output "alb_dns_name" {
+  value = module.blog_alb.dns_name
+}
+
+output "target_group_arns" {
+  value = module.blog_alb.target_group_arns
 }
 
 module "blog_sg" {
