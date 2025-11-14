@@ -51,30 +51,31 @@ module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "8.4.0"
 
-  name = "${var.environment.name}-blog-alb"
-
+  name               = "${var.environment.name}-blog-alb"
   load_balancer_type = "application"
 
   vpc_id          = module.blog_vpc.vpc_id
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
-   target_groups = [
+  # Target group for ASG
+  target_groups = [
     {
-      name_prefix = "blog"
-      port        = 80
-      protocol    = "HTTP"
-      target_type = "instance"
+      name_prefix  = "blog"
+      port         = 80
+      protocol     = "HTTP"
+      target_type  = "instance"
     }
   ]
 
+  # Listener that forwards traffic to target group
   listeners = [
     {
       port     = 80
       protocol = "HTTP"
       default_action = [{
         type             = "forward"
-        target_group_key = 0   # points to first target group
+        target_group_key = 0   # index of the target group in the list above
       }]
     }
   ]
@@ -83,6 +84,7 @@ module "blog_alb" {
     Environment = var.environment.name
   }
 }
+
 
 resource "aws_autoscaling_attachment" "asg_attachment" {
   autoscaling_group_name = module.blog_autoscaling.autoscaling_group_name
