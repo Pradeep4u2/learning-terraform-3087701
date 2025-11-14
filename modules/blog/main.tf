@@ -80,7 +80,7 @@ target_groups = {
 
 resource "aws_autoscaling_attachment" "asg_attachment" {
   autoscaling_group_name = module.blog_autoscaling.autoscaling_group_name
-  lb_target_group_arn    = module.blog_alb.target_group_arns["blog_tg"]
+  lb_target_group_arn    = module.blog_alb.target_groups["blog_tg"].arn
 }
 
 module "blog_sg" {
