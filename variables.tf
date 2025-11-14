@@ -2,7 +2,7 @@ variable "instance_type" {
   description = "Type of EC2 instance to provision"
   default     = "t3.nano"
 }
-  varialbes "ami_filter"  {
+  varialbe "ami_filter"  {
   description = "Name Filter and Owner for AMI"
 
   type = object({
@@ -17,7 +17,7 @@ variable "instance_type" {
 
 }
 
-varaible environment {
+variable environment {
   description = "Development Envirpnment"
 
   type = object ({
@@ -31,12 +31,12 @@ varaible environment {
   }
 }
 
-varialbe "asg_min_size" {
+variable "asg_min_size" {
   description = "Minimum No of Instances in ASG"
   default = 1
 }
 
-varialbe "asg_max_size" {
+variable "asg_max_size" {
   description = "Maximum No of Instances in ASG"
   default = 2
 }
