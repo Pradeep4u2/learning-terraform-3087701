@@ -2,7 +2,7 @@ variable "instance_type" {
   description = "Type of EC2 instance to provision"
   default     = "t3.nano"
 }
-  varialbe "ami_filter"  {
+  variable "ami_filter"  {
   description = "Name Filter and Owner for AMI"
 
   type = object({
@@ -27,7 +27,7 @@ variable environment {
 
   default = {
     name = "dev"
-    cidr = "10.0"
+    newtwork_prefix = "10.0"
   }
 }
 
