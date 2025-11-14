@@ -45,7 +45,6 @@ module "blog_autoscaling" {
   instance_type = var.instance_type
   image_id      = data.aws_ami.app_ami.id
 
-  target_group_arns = module.blog_alb.target_group_arns
 }
 
 module "blog_alb" {
@@ -66,6 +65,7 @@ module "blog_alb" {
       protocol    = "HTTP"
       port        = 80
       target_type = "instance"
+      target_id   = [module.blog_alb.target_id]
     }
   }
 
