@@ -77,6 +77,7 @@ module "blog_alb" {
         protocol    = "HTTPS"
         status_code = "HTTP_301"
       }
+    }
   }
 
   tags = {
