@@ -63,7 +63,7 @@ target_groups = {
     port        = 80
     protocol    = "HTTP"
     target_type = "instance"
-    target_id   = module.blog_alb.target_groups
+    target_id   = module.blog_ec2.instance_ids  # Can point to different EC2 IDs if needed
   }
 }
 
