@@ -41,8 +41,11 @@ module "blog_autoscaling" {
   max_size            = var.asg_max_size
   vpc_zone_identifier = module.blog_vpc.public_subnets
   security_groups     = [module.blog_sg.security_group_id]
-  instance_type       = var.instance_type
-  image_id            = data.aws_ami.app_ami.id
+
+  instance_type = var.instance_type
+  image_id      = data.aws_ami.app_ami.id
+
+  target_group_arns = module.blog_alb.target_group_arns
 }
 
 module "blog_alb" {
@@ -53,31 +56,30 @@ module "blog_alb" {
 
   load_balancer_type = "application"
 
-  vpc_id             = module.blog_vpc.vpc_id
-  subnets            = module.blog_vpc.public_subnets
-  security_groups    = [module.blog_sg.security_group_id]
+  vpc_id          = module.blog_vpc.vpc_id
+  subnets         = module.blog_vpc.public_subnets
+  security_groups = [module.blog_sg.security_group_id]
 
   target_groups = {
-    my_target = {
-      name_prefix      = "${var.environment.name}-tg"
-      protocol         = "HTTP"
-      port             = 80
-      target_type      = "instance"
-      target_id        = module.blog_alb.target_group_arns
+    blog_tg = {
+      name_prefix = "blog"
+      protocol    = "HTTP"
+      port        = 80
+      target_type = "instance"
     }
   }
 
   listeners = {
-    ex-http-https-redirect = {
+    http = {
       port     = 80
       protocol = "HTTP"
-      redirect = {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
+      action_type = "forward"
+      target_group_name = "blog_tg"
     }
   }
+
+  # Prevent ALB module creating attachments that cause recursion
+  target_group_attachments = {}
 
   tags = {
     Environment = var.environment.name
