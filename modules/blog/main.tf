@@ -78,9 +78,6 @@ module "blog_alb" {
     }
   }
 
-  # Prevent ALB module creating attachments that cause recursion
-  target_group_attachments = {}
-
   tags = {
     Environment = var.environment.name
   }
